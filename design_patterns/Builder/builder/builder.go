@@ -19,6 +19,8 @@
 // THE SOFTWARE.
 package builder
 
+import "bytes"
+
 // Builder interface in Builder design pattern
 type Builder interface {
 	// MakeTitle ...
@@ -29,4 +31,45 @@ type Builder interface {
 	MakeItems(items []string)
 	// Close ...
 	Close()
+}
+
+// TextBuilder implements Builder to provide functions writing document
+// to normal text.
+type TextBuilder struct {
+	// buffer save document content
+	buffer bytes.Buffer
+}
+
+func NewTextBuilder() *TextBuilder {
+	return &TextBuilder{}
+}
+
+// MakeTitle  ...
+func (tb *TextBuilder) MakeTitle(title string) {
+	tb.buffer.WriteString("============================\n")
+	tb.buffer.WriteString("[" + title + "]\n")
+	tb.buffer.WriteString("\n")
+}
+
+// MakeString  ...
+func (tb *TextBuilder) MakeString(str string) {
+	tb.buffer.WriteString("* " + str + "]\n")
+	tb.buffer.WriteString("\n")
+}
+
+// MakeItems  ...
+func (tb *TextBuilder) MakeItems(items []string) {
+	for _, v := range items {
+		tb.buffer.WriteString("  -" + v + "\n")
+	}
+	tb.buffer.WriteString("\n")
+}
+
+// Close  ...
+func (tb *TextBuilder) Close() {
+	tb.buffer.WriteString("============================\n")
+}
+
+func (tb *TextBuilder) Result() string {
+	return tb.buffer.String()
 }
