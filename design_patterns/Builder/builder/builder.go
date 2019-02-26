@@ -19,7 +19,11 @@
 // THE SOFTWARE.
 package builder
 
-import "bytes"
+import (
+	"bufio"
+	"bytes"
+	"os"
+)
 
 // Builder interface in Builder design pattern
 type Builder interface {
@@ -72,4 +76,72 @@ func (tb *TextBuilder) Close() {
 
 func (tb *TextBuilder) Result() string {
 	return tb.buffer.String()
+}
+
+type HTMLBuilder struct {
+	filename string
+	file     *os.File
+
+	// wrap os.File
+	writer *bufio.Writer
+}
+
+// HTMLBuilder implements Builder to provide functions writing document
+// to html file.
+func NewHTMLBuilder(filename string) *HTMLBuilder {
+	return &HTMLBuilder{
+		filename: filename,
+	}
+}
+
+// MakeTitle  ...
+func (hb *HTMLBuilder) MakeTitle(title string) {
+	if hb.file == nil {
+		file, err := os.OpenFile(hb.filename, os.O_RDWR|os.O_CREATE, 0755)
+		if err != nil {
+			panic(err)
+		}
+		hb.file = file
+		hb.writer = bufio.NewWriter(hb.file)
+	}
+
+	hb.writer.WriteString("<html><head><title>\n")
+	hb.writer.WriteString(title)
+	hb.writer.WriteString("</title></head>\n<body>\n")
+	hb.writer.WriteString("<h1>")
+	hb.writer.WriteString(title)
+	hb.writer.WriteString("</h1>\n")
+}
+
+// MakeString  ...
+func (hb *HTMLBuilder) MakeString(str string) {
+	hb.writer.WriteString("<p>")
+	hb.writer.WriteString(str)
+	hb.writer.WriteString("</p>\n")
+}
+
+// MakeItems  ...
+func (hb *HTMLBuilder) MakeItems(items []string) {
+	hb.writer.WriteString("<ul>")
+	for _, v := range items {
+		hb.writer.WriteString("<li>")
+		hb.writer.WriteString(v)
+		hb.writer.WriteString("</li>\n")
+	}
+	hb.writer.WriteString("</ul>\n")
+}
+
+// Close  ...
+func (hb *HTMLBuilder) Close() {
+	hb.writer.WriteString("</body>\n<html>\n")
+	hb.writer.Flush()
+	if err := hb.file.Close(); err != nil {
+		panic(err)
+	}
+	hb.file = nil
+	hb.writer = nil
+}
+
+func (hb *HTMLBuilder) Result() string {
+	return hb.filename
 }

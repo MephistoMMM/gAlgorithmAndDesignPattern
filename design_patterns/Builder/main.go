@@ -42,6 +42,11 @@ func main() {
 		drctr := director.NewDirector(bdr)
 		drctr.Construct()
 		fmt.Println(bdr.Result())
+	} else {
+		bdr := builder.NewHTMLBuilder("./test.html")
+		drctr := director.NewDirector(bdr)
+		drctr.Construct()
+		fmt.Println(bdr.Result())
 	}
 
 }
