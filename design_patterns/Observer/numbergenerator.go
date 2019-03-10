@@ -19,6 +19,12 @@
 // THE SOFTWARE.
 package main
 
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
 // Observer is interface of observer in Observer design pattern
 type Observer interface {
 	Update(ng NumberGenerator)
@@ -28,7 +34,7 @@ type Observer interface {
 type NumberGenerator interface {
 	AddObserver(obs Observer)
 	DeleteObserver(obs Observer)
-	NotfiyObservers()
+	NotifyObservers()
 	GetNumber() int
 	Execute()
 }
@@ -36,6 +42,12 @@ type NumberGenerator interface {
 // BaseGenerator has default implement methods of NumberGenerator
 type BaseGenerator struct {
 	observers []Observer
+}
+
+func NewBaseGenerator() *BaseGenerator {
+	return &BaseGenerator{
+		observers: make([]Observer, 0),
+	}
 }
 
 // AddObserver ...
@@ -53,9 +65,62 @@ func (bg *BaseGenerator) DeleteObserver(obs Observer) {
 	}
 }
 
-// NotfiyObservers ...
-func (bg *BaseGenerator) NotfiyObservers(ng NumberGenerator) {
+// NotifyObservers ...
+func (bg *BaseGenerator) NotifyObservers(ng NumberGenerator) {
 	for _, v := range bg.observers {
 		v.Update(ng)
 	}
+}
+
+// RandomNumberGenerator is concrete subject
+type RandomNumberGenerator struct {
+	*BaseGenerator
+
+	number int
+	random *rand.Rand
+}
+
+func NewRandomNumberGenerator() NumberGenerator {
+	return &RandomNumberGenerator{
+		BaseGenerator: NewBaseGenerator(),
+		random:        rand.New(rand.NewSource(time.Now().UnixNano())),
+	}
+}
+
+// NotifyObservers ...
+func (rng *RandomNumberGenerator) NotifyObservers() {
+	rng.BaseGenerator.NotifyObservers(rng)
+}
+
+// GetNumber ...
+func (rng *RandomNumberGenerator) GetNumber() int {
+	return rng.number
+}
+
+// Execute ...
+func (rng *RandomNumberGenerator) Execute() {
+	for i := 0; i < 20; i++ {
+		rng.number = rng.random.Intn(50)
+		rng.NotifyObservers()
+	}
+}
+
+type DigitObserver struct {
+}
+
+// Update ...
+func (do DigitObserver) Update(ng NumberGenerator) {
+	fmt.Printf("Digital Observer: %d.\n", ng.GetNumber())
+}
+
+type GraphObserver struct {
+}
+
+// Update ...
+func (gpho GraphObserver) Update(ng NumberGenerator) {
+	fmt.Print("Graphal Observer:")
+	for i := 0; i < ng.GetNumber(); i++ {
+		fmt.Print("*")
+	}
+	fmt.Println("")
 }
