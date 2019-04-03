@@ -24,63 +24,78 @@ import (
 	"sort"
 )
 
-// https://leetcode.com/problems/3sum/
+// https://leetcode.com/problems/4sum/
 
-// 892 ms 272.9 MB
-// 大概思路是外围For一遍数组，然后在每次迭代的时候，设置[l,r]的区间，区间范围为l , r = i + 1, len(nums) - 1, 这样比对的数就有3个，分别是nums[i], nums[l] 和 nums[r].
-// 最终要达到的效果是: nums[l] + nums[r] == -nums[i]
-// 这道题一定要记住去重，不仅仅是区间的l和r要去重，外围的i也需要去重。去重的方法如下:
-// i去重： if i > 0 or nums[i] == nums[i-1]
-// l去重： while l < r and nums[l] == nums[l-1]: l += 1
-// r去重： while l < r and nums[r] == nums[r+1]: r -= 1
-// i中断： nums[i] > 0
-// i,l中断： nums[i] + nums[l] > 0
-func threeSum(nums []int) [][]int {
+func twoSumForSortedArr(nums []int, target int) [][]int {
 	result := [][]int{}
-	if len(nums) < 3 {
+	if len(nums) < 2 {
 		return result
 	}
 
-	// first sort it
-	sort.Ints(nums)
-
-	for i := 0; i < len(nums)-2; i++ {
-		if i > 0 && nums[i] == nums[i-1] {
-			continue
-		}
-
-		if nums[i] > 0 {
+	for l, r := 0, len(nums)-1; l < r; {
+		if nums[l] > 0 && nums[l] > target {
 			break
 		}
 
-		for l, r := i+1, len(nums)-1; l < r; {
-			if nums[i]+nums[l] > 0 {
-				break
-			}
+		sum := nums[l] + nums[r]
+		if sum == target {
+			result = append(result,
+				[]int{nums[l], nums[r]})
+		}
 
-			sum := nums[i] + nums[l] + nums[r]
-			if sum == 0 {
-				result = append(result,
-					[]int{nums[i], nums[l], nums[r]})
-			}
-
-			if sum >= 0 {
+		if sum >= target {
+			r--
+			for r > l && nums[r] == nums[r+1] {
 				r--
-				for r > l && nums[r] == nums[r+1] {
-					r--
-				}
 			}
+		}
 
-			if sum <= 0 {
+		if sum <= target {
+			l++
+			for l < r && nums[l] == nums[l-1] {
 				l++
-				for l < r && nums[l] == nums[l-1] {
-					l++
-				}
 			}
 		}
 	}
 
 	return result
+}
+
+func NSumForSortedArr(n int, nums []int, target int) [][]int {
+	if n < 2 {
+		panic("Parameter N must be greater than 2")
+	}
+
+	if n == 2 {
+		return twoSumForSortedArr(nums, target)
+	}
+
+	result := [][]int{}
+	if len(nums) < n {
+		return result
+	}
+
+	for i := 0; i < len(nums)-n+1; i++ {
+		if i > 0 && nums[i] == nums[i-1] {
+			continue
+		}
+
+		if nums[i] > 0 && nums[i] > target {
+			break
+		}
+
+		for _, v := range NSumForSortedArr(n-1, nums[i+1:], target-nums[i]) {
+			result = append(result, append([]int{nums[i]}, v...))
+		}
+	}
+
+	return result
+}
+
+// 12 ms	3.3 MB
+func fourSum(nums []int, target int) [][]int {
+	sort.Ints(nums)
+	return NSumForSortedArr(4, nums, target)
 }
 
 func showTuple(tuples [][]int) {
@@ -91,6 +106,6 @@ func showTuple(tuples [][]int) {
 }
 
 func main() {
-	showTuple(threeSum([]int{-1, 0, 1, 2, -1, -4}))
-
+	showTuple(fourSum([]int{1, -2, -5, -4, -3, 3, 3, 5}, -11))
+	showTuple(fourSum([]int{1, 0, -1, 0, -2, 2}, 0))
 }
