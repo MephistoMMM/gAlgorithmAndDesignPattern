@@ -54,6 +54,41 @@ func min(a, b, c int) int {
 	return m
 }
 
+// 4 ms	2.6 MB
+//
+// Wonderful: https://leetcode.com/problems/edit-distance/discuss/25911/My-O(mn)-time-and-O(n)-space-solution-using-DP-with-explanation
+func minDistanceN(word1 string, word2 string) int {
+	w1Len, w2Len := len(word1), len(word2)
+	if w1Len == 0 {
+		return w2Len
+	}
+	if w2Len == 0 {
+		return w1Len
+	}
+
+	rt := make([]int, w2Len+1)
+	for j := 0; j < w2Len+1; j++ {
+		rt[j] = j
+	}
+
+	for i := 1; i <= w1Len; i++ {
+		prev := i
+		for j := 1; j <= w2Len; j++ {
+			cur := rt[j-1]
+			if word1[i-1] != word2[j-1] {
+				cur = 1 + min(rt[j], prev, rt[j-1])
+			}
+
+			rt[j-1] = prev
+			prev = cur
+
+		}
+		rt[w2Len] = prev
+	}
+
+	return rt[w2Len]
+}
+
 // 4 ms	5.6 MB
 func minDistance(word1 string, word2 string) int {
 	w1Len, w2Len := len(word1), len(word2)
@@ -100,4 +135,6 @@ func main() {
 	fmt.Printf("r: %d \n", minDistance("intention", "execution"))
 	fmt.Printf("r: %d \n", minDistance("horse", "ros"))
 	fmt.Printf("r: %d \n", minDistance("a", "b"))
+	fmt.Printf("r: %d \n", minDistanceN("kitten", "sitting"))
+	fmt.Printf("r: %d \n", minDistanceN("intention", "execution"))
 }
