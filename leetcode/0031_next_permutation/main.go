@@ -36,6 +36,7 @@ func reverse(nums []int) {
 	}
 }
 
+// 8 ms 3.4 MB
 func nextPermutation(nums []int) {
 	nLen := len(nums)
 	if nLen < 2 {
@@ -43,21 +44,25 @@ func nextPermutation(nums []int) {
 	}
 
 	i := nLen - 2
-	for i >= 0 && nums[i-1] >= nums[i] {
+	for i >= 0 && nums[i] >= nums[i+1] {
 		i--
 	}
 
-	j := nLen - 1
-	for j >= i && nums[j] <= nums[i-1] {
-		j--
+	if i >= 0 {
+		j := nLen - 1
+		for j >= i && nums[j] <= nums[i] {
+			j--
+		}
+		swap(nums, i, j)
 	}
-	swap(nums, i-1, j)
-	reverse(nums[i:])
-
+	reverse(nums[i+1:])
 }
 
 func main() {
 	nums := []int{1, 5, 8, 4, 7, 6, 5, 3, 1}
 	nextPermutation(nums)
 	fmt.Printf("r: %v \n", nums)
+	nums2 := []int{3, 2, 1}
+	nextPermutation(nums2)
+	fmt.Printf("r: %v \n", nums2)
 }
