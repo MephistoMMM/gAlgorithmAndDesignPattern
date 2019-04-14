@@ -1,6 +1,7 @@
 package suffixarray
 
 import (
+	"fmt"
 	"math/rand"
 	"testing"
 	"time"
@@ -47,20 +48,45 @@ func randStringBytesMaskImprSrc(n int) string {
 	return string(b)
 }
 
-var str = randStringBytesMaskImprSrc(1000000)
+var str = randStringBytesMaskImprSrc(10000)
+
+func verify(str string, sufarr []int) bool {
+	for i := 1; i < len(str); i++ {
+		prev := str[sufarr[i-1]:]
+		cur := str[sufarr[i]:]
+		if cur < prev {
+			fmt.Printf("prev(%s) bigger than cur(%s)\n", prev, cur)
+			return false
+		}
+	}
+
+	return true
+}
 
 func TestBuildByCmpSort(t *testing.T) {
-	sufarr1 := RawSort(str1)
+	sufarr1 := BuildByRadixSort(str1)
 	ShowSufarr(str1, sufarr1)
+	if ret := verify(str1, sufarr1); !ret {
+		t.Error(">> RadixSort Error! <<")
+	}
+
+	sufarr1 = RawSort(str1)
+	ShowSufarr(str1, sufarr1)
+	if ret := verify(str1, sufarr1); !ret {
+		t.Error(">> RawSort Error! <<")
+	}
 
 	sufarr1 = BuildByCmpSort(str1)
 	ShowSufarr(str1, sufarr1)
-
-	sufarr1 = BuildByRadixSort(str1)
-	ShowSufarr(str1, sufarr1)
+	if ret := verify(str1, sufarr1); !ret {
+		t.Error(">> CmpSort Error! <<")
+	}
 
 	sufarr1 = BuildByRadixSortVerbose(str1)
 	ShowSufarr(str1, sufarr1)
+	if ret := verify(str1, sufarr1); !ret {
+		t.Error(">> RadixSortVerbose Error! <<")
+	}
 }
 
 func BenchmarkRawSort(b *testing.B) {

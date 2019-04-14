@@ -101,15 +101,30 @@ func BuildByRadixSort(str string) []int {
 
 	sufarr := make([]int, strLen)
 
-	// Init Index And Rank
-	for i := range str {
-		sufarr[i] = i
+	// Init Rank
+	i := 0
+	for i = range str {
 		rank[i] = int(str[i])
 	}
+	// Init Index By Radix Sort
+	for i = 0; i < radixLen; i++ {
+		radixSortArr[i] = 0
+	}
+	for i = 0; i < strLen; i++ {
+		radixSortArr[rank[i]]++
+	}
+	radixTemp := radixSortArr[0]
+	for i = 1; i < radixLen; i++ {
+		radixSortArr[i] += radixTemp
+		radixTemp = radixSortArr[i]
+	}
+	for i = strLen - 1; i > -1; i-- {
+		radixSortArr[rank[i]]--
+		sufarr[radixSortArr[rank[i]]] = i
+	}
 
-	var radixTemp int
 	for i, l, k := 0, 0, 1; k < strLen; k <<= 1 {
-		l = k - 1
+		l = k
 
 		// Generate RankAdjIndex According To Index And Rank
 		p := 0
@@ -217,7 +232,7 @@ func BuildByRadixSortVerbose(str string) []int {
 	}
 
 	for i, l, k := 0, 0, 1; k < strLen; k <<= 1 {
-		l = k - 1
+		l = k
 
 		// Generate RankAdj According To Index And Rank
 		for i = 0; i < strLen; i++ {
@@ -315,7 +330,7 @@ func BuildByCmpSort(str string) []int {
 	// 2 characters.  Let us sort suffixes according to first 4
 	// characters, then first 8 and so on
 	for i, k, l := 0, 1, 0; k < strLen; k <<= 1 {
-		l = k - 1
+		l = k
 
 		// Assign next rank to every suffix
 		for i = 0; i < strLen; i++ {
