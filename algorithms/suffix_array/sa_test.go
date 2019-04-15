@@ -89,11 +89,11 @@ func TestBuildByCmpSort(t *testing.T) {
 	}
 }
 
-func BenchmarkRawSort(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		RawSort(str)
-	}
-}
+// func BenchmarkRawSort(b *testing.B) {
+// 	for i := 0; i < b.N; i++ {
+// 		RawSort(str)
+// 	}
+// }
 
 // func BenchmarkCmpSort(b *testing.B) {
 // 	for i := 0; i < b.N; i++ {
