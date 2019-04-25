@@ -24,13 +24,10 @@ import (
 	"sort"
 )
 
-// https://leetcode.com/problems/combination-sum/
+// https://leetcode.com/problems/combination-sum-ii/
 
-// 4 ms	4 MB
+// 0 ms	2.6 MB
 func backTrackCombinationSum(candidates []int, current *[]int, target int, result *[][]int) {
-	if len(candidates) == 0 {
-		return
-	}
 
 	if target == 0 {
 		r := make([]int, len(*current))
@@ -39,62 +36,31 @@ func backTrackCombinationSum(candidates []int, current *[]int, target int, resul
 		return
 	}
 
+	candidatesLen := len(candidates)
+	if candidatesLen == 0 {
+		return
+	}
+
 	curLen := len(*current)
-	for i := range candidates {
+	prev := -1
+	for i := 0; i < candidatesLen; i++ {
 		if candidates[i] > target {
 			break
 		}
+		if prev == candidates[i] {
+			continue
+		} else {
+			prev = candidates[i]
+		}
+
 		*current = append(*current, candidates[i])
-		backTrackCombinationSum(candidates[i:], current, target-candidates[i], result)
+		backTrackCombinationSum(candidates[i+1:], current, target-candidates[i], result)
 		*current = (*current)[:curLen]
 	}
 
 }
 
 func combinationSum(candidates []int, target int) [][]int {
-	sort.Ints(candidates)
-	result := make([][]int, 0)
-	current := make([]int, 0)
-	backTrackCombinationSum(candidates, &current, target, &result)
-	return result
-}
-
-// 8 ms	3.9 MB
-// return boolean to decide whether continue
-func backTrackCombinationSum2(candidates []int, current *[]int, target int, result *[][]int) {
-	if len(candidates) == 0 {
-		return
-	}
-
-	if candidates[0] > target {
-		return
-	}
-
-	curLen := len(*current)
-	if curLen == 0 || (*current)[curLen-1] != candidates[0] {
-		// ignore value
-		backTrackCombinationSum(candidates[1:], current, target, result)
-		*current = (*current)[:curLen]
-	}
-
-	*current = append(*current, candidates[0])
-	target -= candidates[0]
-	curLen = len(*current)
-	if target == 0 {
-		r := make([]int, curLen)
-		copy(r, *current)
-		*result = append(*result, r)
-	}
-
-	// current value
-	backTrackCombinationSum(candidates, current, target, result)
-	*current = (*current)[:curLen]
-	// next value
-	backTrackCombinationSum(candidates[1:], current, target, result)
-	*current = (*current)[:curLen]
-}
-
-func combinationSum2(candidates []int, target int) [][]int {
 	sort.Ints(candidates)
 	result := make([][]int, 0)
 	current := make([]int, 0)
@@ -111,6 +77,6 @@ func showResult(r [][]int) {
 }
 
 func main() {
-	showResult(combinationSum([]int{2, 3, 6, 7}, 7))
-	showResult(combinationSum([]int{2, 3, 5}, 7))
+	showResult(combinationSum([]int{10, 1, 2, 7, 6, 1, 5}, 8))
+	showResult(combinationSum([]int{2, 5, 2, 1, 2}, 5))
 }
