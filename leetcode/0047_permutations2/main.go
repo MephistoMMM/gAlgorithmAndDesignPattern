@@ -24,46 +24,69 @@ import (
 	"sort"
 )
 
-// https://leetcode.com/problems/permutations-ii/
-
+// 4 ms	7.9 MB
 func permuteLooply(result *[][]int, nums []int) {
 	numsLen := len(nums)
+	cur := make([]int, numsLen)
+	used := make([]bool, numsLen)
+	// nums index of element in the same position of cur
+	occupy := make([]int, numsLen)
 	record := make([]int, numsLen)
 	for i := 0; i < numsLen; i++ {
-		record[i] = i
+		occupy[i] = -1
 	}
 
 	r := 0
 	for {
 		if r == numsLen {
 			n := make([]int, numsLen)
-			copy(n, nums)
+			copy(n, cur)
 			*result = append(*result, n)
 			r--
 		}
 
 		if record[r] == numsLen {
-			record[r] = r
+			record[r] = 0
+			// current may occupy number
+			if occupy[r] > -1 {
+				used[occupy[r]] = false
+				occupy[r] = -1
+			}
 			r--
 			if r >= 0 {
+				// preview must occupy a number
+				used[occupy[r]] = false
+				occupy[r] = -1
 				continue
 			} else {
 				break
 			}
 		}
 
-		fmt.Printf("record: %v , nums: %v , r: %d \n", record, nums, r)
-		for record[r]+1 < numsLen && nums[record[r]+1] == nums[record[r]] {
+		k := record[r]
+		// skip used numbers and same numbers
+		if used[k] || (k+1 < numsLen && nums[k] == nums[k+1] && !used[k+1]) {
 			record[r]++
+			continue
 		}
 
-		if record[r] < numsLen {
-		}
+		// occupy a number
+		cur[r] = nums[k]
+		used[k] = true
+		occupy[r] = k
 		record[r]++
 		r++
 	}
 }
 
+func permuteUnique(nums []int) [][]int {
+	sort.Ints(nums)
+	result := make([][]int, 0)
+	permuteLooply(&result, nums)
+	return result
+}
+
+// 8ms 7.9m
 func permuteRecursively(result *[][]int, nums []int, used []bool, cur []int, i int) {
 	numsLen := len(nums)
 
@@ -89,7 +112,7 @@ func permuteRecursively(result *[][]int, nums []int, used []bool, cur []int, i i
 	}
 }
 
-func permuteUnique(nums []int) [][]int {
+func permuteUnique2(nums []int) [][]int {
 	sort.Ints(nums)
 	result := make([][]int, 0)
 	cur := make([]int, len(nums))
@@ -100,6 +123,6 @@ func permuteUnique(nums []int) [][]int {
 
 func main() {
 	fmt.Printf("%v \n", permuteUnique([]int{0, 1, 0, 0, 9}))
-	// fmt.Printf("%v \n", permuteUnique([]int{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1}))
+	fmt.Printf("%v \n", permuteUnique([]int{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1}))
 	// fmt.Printf("%v \n", permuteUnique([]int{5, 4, 2, 6}))
 }
