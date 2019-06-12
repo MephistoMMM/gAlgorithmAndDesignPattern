@@ -21,12 +21,22 @@ package utils
 
 import "fmt"
 
+type ItemFunc func(v interface{})
+
 type Console struct{}
 
 func (cnle *Console) DoubleDimArray(output [][]string) {
 	fmt.Println("{")
 	for _, v := range output {
 		fmt.Printf("\t%v\n", v)
+	}
+	fmt.Println("}")
+}
+
+func (cnle *Console) DoubleDimArrayWithItemFunc(print ItemFunc, output [][]string) {
+	fmt.Println("{")
+	for _, v := range output {
+		print(v)
 	}
 	fmt.Println("}")
 }
