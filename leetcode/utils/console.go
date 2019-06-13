@@ -45,6 +45,6 @@ func (cnle *Console) Value(v interface{}) {
 	fmt.Printf("%v\n", v)
 }
 
-func (cnle *Console) Valuef(format string, v interface{}) {
-	fmt.Printf(format, v)
+func (cnle *Console) Valuef(format string, v ...interface{}) {
+	fmt.Printf(format, v...)
 }
