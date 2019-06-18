@@ -17,38 +17,53 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-package utils
+package main
 
-import "fmt"
+import "gAaD/leetcode/utils"
 
-type ItemFunc func(v interface{})
+// https://leetcode.com/problems/maximum-subarray/
 
-type Console struct{}
-
-func (cnle *Console) Array(output interface{}) {
-	fmt.Printf("%v\n", output)
-}
-
-func (cnle *Console) DoubleDimArray(output [][]string) {
-	fmt.Println("{")
-	for _, v := range output {
-		fmt.Printf("\t%v\n", v)
+func max(a, b int) int {
+	if a > b {
+		return a
 	}
-	fmt.Println("}")
+	return b
 }
 
-func (cnle *Console) DoubleDimArrayWithItemFunc(print ItemFunc, output [][]string) {
-	fmt.Println("{")
-	for _, v := range output {
-		print(v)
+// 4 ms	3.3 MB
+func maxSubArray(nums []int) int {
+	curSum, maxSum := nums[0], nums[0]
+	numsLen := len(nums)
+
+	for i := 1; i < numsLen; i++ {
+		curSum = max(nums[i], curSum+nums[i])
+		maxSum = max(maxSum, curSum)
 	}
-	fmt.Println("}")
+
+	return maxSum
 }
 
-func (cnle *Console) Value(v interface{}) {
-	fmt.Printf("%v\n", v)
+// 176 ms	3.5 MB
+func maxSubArray2(nums []int) int {
+	maxSum := nums[0]
+	numsLen := len(nums)
+
+	// sums for subarry long 1
+	tmp := make([]int, numsLen)
+
+	for l := 1; l <= numsLen; l++ {
+		for i := 0; i < numsLen-l+1; i++ {
+			tmp[i] += nums[i+l-1]
+			if tmp[i] > maxSum {
+				maxSum = tmp[i]
+			}
+		}
+	}
+
+	return maxSum
 }
 
-func (cnle *Console) Valuef(format string, v ...interface{}) {
-	fmt.Printf(format, v...)
+func main() {
+	cnsl := &utils.Console{}
+	cnsl.Value(maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4}))
 }

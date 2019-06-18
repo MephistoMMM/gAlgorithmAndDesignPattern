@@ -17,38 +17,67 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-package utils
+package main
 
-import "fmt"
+import "gAaD/leetcode/utils"
 
-type ItemFunc func(v interface{})
-
-type Console struct{}
-
-func (cnle *Console) Array(output interface{}) {
-	fmt.Printf("%v\n", output)
-}
-
-func (cnle *Console) DoubleDimArray(output [][]string) {
-	fmt.Println("{")
-	for _, v := range output {
-		fmt.Printf("\t%v\n", v)
+// https://leetcode.com/problems/spiral-matrix/
+// 0 ms	2 MB
+func spiralOrder(matrix [][]int) []int {
+	row := len(matrix)
+	if row == 0 {
+		return []int{}
 	}
-	fmt.Println("}")
-}
-
-func (cnle *Console) DoubleDimArrayWithItemFunc(print ItemFunc, output [][]string) {
-	fmt.Println("{")
-	for _, v := range output {
-		print(v)
+	column := len(matrix[0])
+	if column == 0 {
+		return []int{}
 	}
-	fmt.Println("}")
+
+	result := make([]int, 0, row*column)
+	bounds := [4]int{column, row, -1, 0}
+	deltas := [4]int{1, 1, -1, -1}
+
+	i, j := 0, -1
+	cursors := [4]*int{&j, &i, &j, &i}
+	// number of changing direction
+	count := 0
+	cursor := cursors[0]
+	for {
+
+		index := count % 4
+		if *cursor+deltas[index] != bounds[index] {
+			*cursor += deltas[index]
+			result = append(result, matrix[i][j])
+			continue
+		}
+
+		// cursor is at the bound
+		bounds[index] -= deltas[index]
+		count++
+		index = count % 4
+		cursor = cursors[index]
+
+		// after modify curser
+		if *cursor+deltas[index] == bounds[index] {
+			break
+		}
+	}
+
+	return result
 }
 
-func (cnle *Console) Value(v interface{}) {
-	fmt.Printf("%v\n", v)
-}
-
-func (cnle *Console) Valuef(format string, v ...interface{}) {
-	fmt.Printf(format, v...)
+func main() {
+	matrix1 := [][]int{
+		{1, 2, 3},
+		{4, 5, 6},
+		{7, 8, 9},
+	}
+	cnle := &utils.Console{}
+	cnle.Array(spiralOrder(matrix1))
+	matrix2 := [][]int{
+		{1, 2, 3, 4},
+		{5, 6, 7, 8},
+		{9, 10, 11, 12},
+	}
+	cnle.Array(spiralOrder(matrix2))
 }

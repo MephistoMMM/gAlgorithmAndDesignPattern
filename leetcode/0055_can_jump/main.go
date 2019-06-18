@@ -17,38 +17,51 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-package utils
+package main
 
-import "fmt"
+import "gAaD/leetcode/utils"
 
-type ItemFunc func(v interface{})
+// https://leetcode.com/problems/jump-game/
 
-type Console struct{}
+// 8 ms	4.2 MB
+func canJump(nums []int) bool {
+	numsLen := len(nums)
+	for numsLen > 1 {
+		i := numsLen - 2
+		for i >= 0 && numsLen-i-1 > nums[i] {
+			i--
+		}
 
-func (cnle *Console) Array(output interface{}) {
-	fmt.Printf("%v\n", output)
-}
+		if i < 0 {
+			return false
+		}
 
-func (cnle *Console) DoubleDimArray(output [][]string) {
-	fmt.Println("{")
-	for _, v := range output {
-		fmt.Printf("\t%v\n", v)
+		numsLen = i + 1
 	}
-	fmt.Println("}")
+
+	return true
 }
 
-func (cnle *Console) DoubleDimArrayWithItemFunc(print ItemFunc, output [][]string) {
-	fmt.Println("{")
-	for _, v := range output {
-		print(v)
+// 8 ms	6.2 MB
+func canJump2(nums []int) bool {
+	numsLen := len(nums)
+	if numsLen <= 1 {
+		return true
 	}
-	fmt.Println("}")
+
+	i := numsLen - 2
+	for i >= 0 && numsLen-i-1 > nums[i] {
+		i--
+	}
+
+	if i < 0 {
+		return false
+	}
+	return canJump(nums[:i+1])
 }
 
-func (cnle *Console) Value(v interface{}) {
-	fmt.Printf("%v\n", v)
-}
-
-func (cnle *Console) Valuef(format string, v ...interface{}) {
-	fmt.Printf(format, v...)
+func main() {
+	cnls := &utils.Console{}
+	cnls.Value(canJump([]int{2, 3, 1, 1, 4}))
+	cnls.Value(canJump([]int{3, 2, 1, 0, 4}))
 }
