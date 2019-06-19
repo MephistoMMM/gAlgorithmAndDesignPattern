@@ -17,53 +17,67 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-package utils
+package main
 
 import (
-	"fmt"
-	"reflect"
+	"gAaD/leetcode/utils"
+	"sort"
 )
 
-type ItemFunc func(v interface{})
+// https://leetcode.com/problems/merge-intervals/
 
-type Console struct{}
-
-func (cnle *Console) Array(output interface{}) {
-	fmt.Printf("%v\n", output)
-}
-
-func (cnle *Console) List(output interface{}) {
-	s := reflect.ValueOf(output)
-	if s.Kind() != reflect.Slice {
-		panic("InterfaceSlice() given a non-slice type")
+// 8 ms	4.9 MB
+func merge(intervals [][]int) [][]int {
+	result := [][]int{}
+	if len(intervals) == 0 {
+		return result
 	}
-	fmt.Printf("[")
-	for i := 0; i < s.Len(); i++ {
-		fmt.Printf("%v, ", s.Index(i).Interface())
+
+	sort.Slice(intervals, func(i, j int) bool {
+		return intervals[i][0] < intervals[j][0]
+	})
+
+	cur := intervals[0]
+	for i := 1; i < len(intervals); i++ {
+		isOverlap := false
+		// |xxxxxx|
+		//     |xxxxxx|
+		if intervals[i][0] <= cur[1] && intervals[i][1] >= cur[1] {
+			cur[1] = intervals[i][1]
+			isOverlap = true
+		}
+
+		// |xxxxxxx|
+		//  |xxxxx|
+		if cur[1] >= intervals[i][1] {
+			isOverlap = true
+		}
+
+		if !isOverlap {
+			result = append(result, cur)
+			cur = intervals[i]
+		}
 	}
-	fmt.Printf("]\n")
+	result = append(result, cur)
+
+	return result
 }
 
-func (cnle *Console) DoubleDimArray(output [][]string) {
-	fmt.Println("{")
-	for _, v := range output {
-		fmt.Printf("\t%v\n", v)
-	}
-	fmt.Println("}")
-}
-
-func (cnle *Console) DoubleDimArrayWithItemFunc(print ItemFunc, output [][]string) {
-	fmt.Println("{")
-	for _, v := range output {
-		print(v)
-	}
-	fmt.Println("}")
-}
-
-func (cnle *Console) Value(v interface{}) {
-	fmt.Printf("%v\n", v)
-}
-
-func (cnle *Console) Valuef(format string, v ...interface{}) {
-	fmt.Printf(format, v...)
+func main() {
+	cnsl := &utils.Console{}
+	cnsl.List(merge([][]int{
+		{1, 3}, {2, 6}, {8, 10}, {15, 18},
+	}))
+	cnsl.List(merge([][]int{
+		{1, 4}, {4, 5},
+	}))
+	cnsl.List(merge([][]int{
+		{1, 4}, {0, 5},
+	}))
+	cnsl.List(merge([][]int{
+		{1, 4}, {2, 3},
+	}))
+	cnsl.List(merge([][]int{
+		{1, 4}, {2, 3}, {7, 9}, {0, 5}, {9, 12},
+	}))
 }
