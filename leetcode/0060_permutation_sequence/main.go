@@ -17,57 +17,47 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-package utils
+package main
 
-import (
-	"fmt"
-	"reflect"
-)
+import "gAaD/leetcode/utils"
 
-type ItemFunc func(v interface{})
+// https://leetcode.com/problems/permutation-sequence/
 
-type Console struct{}
-
-func (cnle *Console) Array(output interface{}) {
-	fmt.Printf("%v\n", output)
+func factorial(n int) int {
+	result := 1
+	for i := n; i > 1; i-- {
+		result *= i
+	}
+	return result
 }
 
-func (cnle *Console) List(output interface{}) {
-	s := reflect.ValueOf(output)
-	if s.Kind() != reflect.Slice {
-		panic("InterfaceSlice() given a non-slice type")
+// 0 ms	2 MB
+func getPermutation(n int, k int) string {
+	k -= 1
+	usedNums := make([]bool, n)
+	result := make([]byte, 0, n)
+	for i := n - 1; i >= 0; i-- {
+		divisor := factorial(i)
+		quotient := k / divisor
+		j := 0
+		for ; j < n; j++ {
+			if !usedNums[j] {
+				quotient--
+			}
+			if quotient < 0 {
+				break
+			}
+		}
+		usedNums[j] = true
+		result = append(result, '1'+byte(j))
+
+		k = k % divisor
 	}
-	fmt.Printf("[")
-	for i := 0; i < s.Len(); i++ {
-		fmt.Printf("%v, ", s.Index(i).Interface())
-	}
-	fmt.Printf("]\n")
+
+	return string(result)
 }
 
-func (cnle *Console) DoubleDimArray(output interface{}) {
-	s := reflect.ValueOf(output)
-	if s.Kind() != reflect.Slice {
-		panic("InterfaceSlice() given a non-slice type")
-	}
-	fmt.Println("{")
-	for i := 0; i < s.Len(); i++ {
-		fmt.Printf("\t%v\n", s.Index(i).Interface())
-	}
-	fmt.Println("}")
-}
-
-func (cnle *Console) DoubleDimArrayWithItemFunc(print ItemFunc, output [][]string) {
-	fmt.Println("{")
-	for _, v := range output {
-		print(v)
-	}
-	fmt.Println("}")
-}
-
-func (cnle *Console) Value(v interface{}) {
-	fmt.Printf("%v\n", v)
-}
-
-func (cnle *Console) Valuef(format string, v ...interface{}) {
-	fmt.Printf(format, v...)
+func main() {
+	cnsl := &utils.Console{}
+	cnsl.Value(getPermutation(4, 9))
 }

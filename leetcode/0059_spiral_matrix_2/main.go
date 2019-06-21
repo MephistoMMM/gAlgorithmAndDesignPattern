@@ -17,57 +17,55 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-package utils
+package main
 
-import (
-	"fmt"
-	"reflect"
-)
+import "gAaD/leetcode/utils"
 
-type ItemFunc func(v interface{})
+// https://leetcode.com/problems/spiral-matrix-ii/
 
-type Console struct{}
+// 0 ms	2.5 MB
+func generateMatrix(n int) [][]int {
+	row, column := n, n
+	result := make([][]int, row)
+	for i := range result {
+		result[i] = make([]int, column)
+	}
 
-func (cnle *Console) Array(output interface{}) {
-	fmt.Printf("%v\n", output)
+	bounds := [4]int{column, row, -1, 0}
+	deltas := [4]int{1, 1, -1, -1}
+
+	i, j := 0, -1
+	cursors := [4]*int{&j, &i, &j, &i}
+	// number of changing direction
+	count := 0
+	direction := 0
+	cursor := cursors[0]
+	for {
+
+		index := direction % 4
+		if *cursor+deltas[index] != bounds[index] {
+			*cursor += deltas[index]
+			count++
+			result[i][j] = count
+			continue
+		}
+
+		// cursor is at the bound
+		bounds[index] -= deltas[index]
+		direction++
+		index = direction % 4
+		cursor = cursors[index]
+
+		// after modify curser
+		if *cursor+deltas[index] == bounds[index] {
+			break
+		}
+	}
+
+	return result
 }
 
-func (cnle *Console) List(output interface{}) {
-	s := reflect.ValueOf(output)
-	if s.Kind() != reflect.Slice {
-		panic("InterfaceSlice() given a non-slice type")
-	}
-	fmt.Printf("[")
-	for i := 0; i < s.Len(); i++ {
-		fmt.Printf("%v, ", s.Index(i).Interface())
-	}
-	fmt.Printf("]\n")
-}
-
-func (cnle *Console) DoubleDimArray(output interface{}) {
-	s := reflect.ValueOf(output)
-	if s.Kind() != reflect.Slice {
-		panic("InterfaceSlice() given a non-slice type")
-	}
-	fmt.Println("{")
-	for i := 0; i < s.Len(); i++ {
-		fmt.Printf("\t%v\n", s.Index(i).Interface())
-	}
-	fmt.Println("}")
-}
-
-func (cnle *Console) DoubleDimArrayWithItemFunc(print ItemFunc, output [][]string) {
-	fmt.Println("{")
-	for _, v := range output {
-		print(v)
-	}
-	fmt.Println("}")
-}
-
-func (cnle *Console) Value(v interface{}) {
-	fmt.Printf("%v\n", v)
-}
-
-func (cnle *Console) Valuef(format string, v ...interface{}) {
-	fmt.Printf(format, v...)
+func main() {
+	cnsl := &utils.Console{}
+	cnsl.DoubleDimArray(generateMatrix(3))
 }

@@ -17,57 +17,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-package utils
+package main
 
-import (
-	"fmt"
-	"reflect"
-)
+import "gAaD/leetcode/utils"
 
-type ItemFunc func(v interface{})
+// https://leetcode.com/problems/length-of-last-word/
 
-type Console struct{}
+// 0 ms	2.2 MB
+func lengthOfLastWord(s string) int {
+	count := 0
+	for i := len(s) - 1; i > -1; i-- {
+		if s[i] != ' ' {
+			count++
+		} else if count != 0 {
+			break
+		}
+		// do nothing if s[i] == ' ' and count == 0
+	}
 
-func (cnle *Console) Array(output interface{}) {
-	fmt.Printf("%v\n", output)
+	return count
 }
 
-func (cnle *Console) List(output interface{}) {
-	s := reflect.ValueOf(output)
-	if s.Kind() != reflect.Slice {
-		panic("InterfaceSlice() given a non-slice type")
-	}
-	fmt.Printf("[")
-	for i := 0; i < s.Len(); i++ {
-		fmt.Printf("%v, ", s.Index(i).Interface())
-	}
-	fmt.Printf("]\n")
-}
-
-func (cnle *Console) DoubleDimArray(output interface{}) {
-	s := reflect.ValueOf(output)
-	if s.Kind() != reflect.Slice {
-		panic("InterfaceSlice() given a non-slice type")
-	}
-	fmt.Println("{")
-	for i := 0; i < s.Len(); i++ {
-		fmt.Printf("\t%v\n", s.Index(i).Interface())
-	}
-	fmt.Println("}")
-}
-
-func (cnle *Console) DoubleDimArrayWithItemFunc(print ItemFunc, output [][]string) {
-	fmt.Println("{")
-	for _, v := range output {
-		print(v)
-	}
-	fmt.Println("}")
-}
-
-func (cnle *Console) Value(v interface{}) {
-	fmt.Printf("%v\n", v)
-}
-
-func (cnle *Console) Valuef(format string, v ...interface{}) {
-	fmt.Printf(format, v...)
+func main() {
+	cnsl := &utils.Console{}
+	cnsl.Value(lengthOfLastWord("Hello World"))
 }
