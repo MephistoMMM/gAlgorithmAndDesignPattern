@@ -26,6 +26,11 @@ import (
 
 type ItemFunc func(v interface{})
 
+type LinkListNode interface {
+	NextNode() LinkListNode
+	Value() interface{}
+}
+
 type Console struct{}
 
 func (cnle *Console) Array(output interface{}) {
@@ -70,4 +75,12 @@ func (cnle *Console) Value(v interface{}) {
 
 func (cnle *Console) Valuef(format string, v ...interface{}) {
 	fmt.Printf(format, v...)
+}
+
+func (cnle *Console) LinkList(listNode LinkListNode) {
+	for !reflect.ValueOf(listNode).IsNil() {
+		fmt.Printf("%v -> ", listNode.Value())
+		listNode = listNode.NextNode()
+	}
+	fmt.Println("")
 }
