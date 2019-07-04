@@ -21,7 +21,7 @@
 // Package utils/combinatorics provide functions for Combinetorics.
 package utils
 
-func factorial(from, to int) int {
+func Factorial(from, to int) int {
 	result := 1
 	for from > to {
 		result *= from
@@ -30,7 +30,7 @@ func factorial(from, to int) int {
 	return result
 }
 
-func Select(num, total int) int {
+func Combination(num, total int) int {
 	if num > total/2 {
 		num = total - num
 	}
@@ -38,5 +38,5 @@ func Select(num, total int) int {
 		return 1
 	}
 
-	return factorial(total, total-num) / factorial(num, 1)
+	return Factorial(total, total-num) / Factorial(num, 1)
 }
