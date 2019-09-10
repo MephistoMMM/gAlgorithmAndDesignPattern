@@ -19,19 +19,56 @@
 // THE SOFTWARE.
 package main
 
-// https://leetcode.com/problems/sqrtx/
-
 import (
 	"gAaD/leetcode/utils"
-	"math"
+	"strings"
 )
 
-func mySqrt(x int) int {
-	return int(math.Floor(math.Sqrt(float64(x))))
+// https://leetcode.com/problems/simplify-path/
+
+// 0 ms	2.8 MB
+func simplifyPath(path string) string {
+	if len(path) == 0 {
+		return path
+	}
+
+	stack := make([]string, 0)
+	top := -1
+
+	prev, i := 0, 1
+	for ; i < len(path); i++ {
+		if path[i] != '/' {
+			if i == len(path)-1 {
+				i++
+			} else {
+				continue
+			}
+		}
+
+		directory := path[prev+1 : i]
+		if len(directory) == 0 || directory == "." {
+			// do nothing
+		} else if directory == ".." && top < 0 {
+			// do nothing
+		} else if directory == ".." && top >= 0 {
+			stack = stack[:top]
+			top--
+		} else {
+			stack = append(stack, path[prev+1:i])
+			top++
+			prev = i
+		}
+
+		prev = i
+	}
+
+	return "/" + strings.Join(stack, "/")
+
 }
 
 func main() {
 	cnsl := &utils.Console{}
-	cnsl.Value(mySqrt(4))
-	cnsl.Value(mySqrt(8))
+	cnsl.Value(simplifyPath("/home/"))
+	cnsl.Value(simplifyPath("/a//b////c/d//././/.."))
+	cnsl.Value(simplifyPath("/../"))
 }

@@ -19,19 +19,34 @@
 // THE SOFTWARE.
 package main
 
-// https://leetcode.com/problems/sqrtx/
+// https://leetcode.com/problems/climbing-stairs/submissions/
 
-import (
-	"gAaD/leetcode/utils"
-	"math"
-)
+import "gAaD/leetcode/utils"
 
-func mySqrt(x int) int {
-	return int(math.Floor(math.Sqrt(float64(x))))
+//0 ms	1.9 MB
+func climbStairs(n int) int {
+	if n == 2 {
+		return 2
+	}
+	if n == 1 {
+		return 1
+	}
+	if n == 0 {
+		return 0
+	}
+
+	f1, f2 := 1, 2
+	for i := 3; i <= n; i++ {
+		tmp := f1 + f2
+		f1 = f2
+		f2 = tmp
+	}
+
+	return f2
 }
 
 func main() {
 	cnsl := &utils.Console{}
-	cnsl.Value(mySqrt(4))
-	cnsl.Value(mySqrt(8))
+	cnsl.Value(climbStairs(4))
+
 }
