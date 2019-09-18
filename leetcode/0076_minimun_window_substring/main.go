@@ -19,14 +19,16 @@
 // THE SOFTWARE.
 package main
 
-import "gAaD/leetcode/utils"
+import (
+	"gAaD/leetcode/utils"
+)
 
 // https://leetcode.com/problems/minimum-window-substring/
 
 // AlphaDict 0~25 : A ~ Z
 type AlphaDict struct {
 	length int
-	dict   [128]bool
+	dict   [128]int
 }
 
 func (ad *AlphaDict) Len() int {
@@ -34,20 +36,18 @@ func (ad *AlphaDict) Len() int {
 }
 
 func (ad *AlphaDict) Contain(c byte) bool {
-	return ad.dict[int(c)]
+	return ad.dict[c] > 0
 }
 
 func (ad *AlphaDict) Add(c byte) {
-	if !ad.Contain(c) {
-		ad.length++
-		ad.dict[int(c)] = true
-	}
+	ad.length++
+	ad.dict[c]++
 }
 
-func (ad *AlphaDict) Remove(c byte) {
+func (ad *AlphaDict) Sub(c byte) {
 	if ad.Contain(c) {
 		ad.length--
-		ad.dict[int(c)] = false
+		ad.dict[c]--
 	}
 }
 
@@ -64,24 +64,40 @@ type AlphaLinkListNode struct {
 	Index int
 }
 
+type SameCharLinkList struct {
+	head *AlphaLinkListNode
+	tail *AlphaLinkListNode
+}
+
+func (scll *SameCharLinkList) Shift() {
+	if scll.head == nil {
+		return
+	}
+	if scll.head == scll.tail {
+		scll.head = nil
+		scll.tail = nil
+		return
+	}
+	scll.head = scll.head.SCNext
+}
+
+func (scll *SameCharLinkList) Append(node *AlphaLinkListNode) {
+	if scll.head == nil {
+		scll.head = node
+		scll.tail = node
+		return
+	}
+
+	scll.tail.SCNext = node
+	scll.tail = node
+}
+
 // AlphaLinkList :
 type AlphaLinkList struct {
 	head *AlphaLinkListNode
 	tail *AlphaLinkListNode
 
-	charsList []*AlphaLinkList
-}
-
-func NewAlphaLinkList() *AlphaLinkList {
-	charsList := make([]*AlphaLinkList, 128)
-	for i := range charsList {
-		charsList[i] = &AlphaLinkList{}
-	}
-
-	return &AlphaLinkList{
-		charsList: charsList,
-	}
-
+	charsList [128]SameCharLinkList
 }
 
 func (all *AlphaLinkList) HeadIndex() int {
@@ -110,56 +126,58 @@ func (all *AlphaLinkList) Len() int {
 	return all.tail.Index - all.head.Index + 1
 }
 
-func (all *AlphaLinkList) IsHead(c byte) bool {
-	return all.head.Char == c
-}
+func (all *AlphaLinkList) Remove(c byte) {
+	node := all.charsList[int(c)].head
+	if node == nil {
+		return
+	}
 
-func (all *AlphaLinkList) IsTail(c byte) bool {
-	return all.tail.Char == c
-}
-
-func (all *AlphaLinkList) Delete(c byte) {
-	if all.IsHead(c) {
-		// header = cur->next
-		all[1][0] = all[i][1]
+	if node == all.head {
+		// head = cur->next
+		all.head = node.Next
 	} else {
 		// prev->next = cur->next
-		all[all[i][0]][1] = all[i][1]
+		node.Prev.Next = node.Next
 	}
 
-	if all.IsTail(c) {
-		// tailer = cur->prev
-		all[1][1] = all[i][0]
+	if node == all.tail {
+		// tail = cur->prev
+		all.tail = node.Prev
 	} else {
 		// next->prev = cur->prev
-		all[all[i][1]][0] = all[i][0]
+		node.Next.Prev = node.Prev
 	}
-	all[i][1] = 0
-	all[i][0] = 0
+
+	all.charsList[int(c)].Shift()
 }
 
 func (all *AlphaLinkList) Append(c byte, index int) {
 	i := int(c)
-	// header is NULL
-	if all[1][0] == 0 {
-		// header = cur
-		all[1][0] = i
-		// tailer = cur
-		all[1][1] = i
+	node := &AlphaLinkListNode{
+		Char:  c,
+		Index: index,
+	}
+	all.charsList[i].Append(node)
+
+	// head is NULL
+	if all.head == nil {
+		// head = cur
+		all.head = node
+		// tail = cur
+		all.tail = node
 		return
 	}
 
-	// tailer->next = cur
-	all[all[1][1]][1] = i
-	// cur->prev = tailer
-	all[i][0] = all[1][1]
-	// tai
-	all[1][1] = i
-	// cur->value = index
-	all[i][2] = index
+	// tail->next = cur
+	all.tail.Next = node
+	// cur->prev = tail
+	node.Prev = all.tail
+	// tail = cur
+	all.tail = node
 	return
 }
 
+// 16 ms 6.4 MB
 func minWindow(s string, t string) string {
 	if t == "" || s == "" {
 		return ""
@@ -179,11 +197,15 @@ func minWindow(s string, t string) string {
 			continue
 		}
 
-		status.Remove(c)
+		if !status.Contain(c) {
+			linkList.Remove(c)
+		}
+
+		status.Sub(c)
 		linkList.Append(c, index)
 		if status.Len() == 0 && linkList.Len() < minLen {
 			minLen = linkList.Len()
-			minStr = s[linkList.HeaderIndex() : linkList.TailerValue()+1]
+			minStr = s[linkList.HeadIndex() : linkList.TailIndex()+1]
 		}
 
 	}
@@ -193,7 +215,8 @@ func minWindow(s string, t string) string {
 
 func main() {
 	cnsl := &utils.Console{}
+	cnsl.Value(minWindow("acbbaca", "aba"))
 	cnsl.Value(minWindow("ADOBECODEBANC", "ABC"))
 	cnsl.Value(minWindow("a", "a"))
-
+	cnsl.Value(minWindow("a", "aa"))
 }
