@@ -21,7 +21,7 @@ package operateBoard
 
 import (
 	"fmt"
-	"gAaD/design_patterns/State/state"
+	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/State/state"
 	"time"
 )
 

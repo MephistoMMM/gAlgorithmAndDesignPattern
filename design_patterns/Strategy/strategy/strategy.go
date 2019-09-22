@@ -20,7 +20,7 @@
 package strategy
 
 import (
-	"gAaD/design_patterns/Strategy/hand"
+	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/Strategy/hand"
 	"math/rand"
 )
 

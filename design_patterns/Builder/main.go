@@ -21,8 +21,8 @@ package main
 
 import (
 	"fmt"
-	"gAaD/design_patterns/Builder/builder"
-	"gAaD/design_patterns/Builder/director"
+	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/Builder/builder"
+	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/Builder/director"
 	"os"
 )
 

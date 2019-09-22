@@ -50,6 +50,7 @@ func (cnle *Console) List(output interface{}) {
 }
 
 func (cnle *Console) DoubleDimArray(output interface{}) {
+	fmt.Println("---------------------")
 	s := reflect.ValueOf(output)
 	if s.Kind() != reflect.Slice {
 		panic("InterfaceSlice() given a non-slice type")

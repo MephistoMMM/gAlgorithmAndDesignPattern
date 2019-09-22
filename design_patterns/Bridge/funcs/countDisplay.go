@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 package funcs
 
-import "gAaD/design_patterns/Bridge/impl"
+import "github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/Bridge/impl"
 
 type CountDisplay struct {
 	Display

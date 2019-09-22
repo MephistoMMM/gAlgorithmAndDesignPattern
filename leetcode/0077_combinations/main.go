@@ -19,32 +19,50 @@
 // THE SOFTWARE.
 package main
 
-import (
-	"fmt"
-	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/Strategy/player"
-	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/Strategy/strategy"
-	"time"
-)
+import "github.com/MephistoMMM/gAlgorithmAndDesignPattern/leetcode/utils"
 
-func main() {
-	seed1, seed2 := int64(time.Now().Unix()), int64(time.Now().UnixNano()>>10)
-	player1 := player.NewPlayer("Taro", strategy.NewWinningStrategy(seed1))
-	player2 := player.NewPlayer("Hana", strategy.NewProbStrategy(seed2))
-	for i := 0; i < 10000; i++ {
-		nextHand1 := player1.NextHand()
-		nextHand2 := player2.NextHand()
-		if nextHand1.IsStrongerThan(nextHand2) {
-			player1.Win()
-			player2.Lose()
-		} else if nextHand2.IsStrongerThan(nextHand1) {
-			player2.Win()
-			player1.Lose()
-		} else {
-			player1.Even()
-			player2.Even()
-		}
+// https://leetcode.com/problems/combinations/
+
+// 144ms 218MB
+func combine(n int, k int) [][]int {
+	if k == 0 || n == 0 {
+		return [][]int{}
 	}
 
-	fmt.Println(player1.String())
-	fmt.Println(player2.String())
+	results := make([][]int, 0, utils.Combination(k, n))
+	cache := make([]int, k)
+
+	cur := 0
+	cache[cur] = 1
+	for {
+		if cache[cur] > n-k+cur+1 {
+			if cur == 0 {
+				break
+			}
+			cur--
+			cache[cur]++
+			continue
+		}
+
+		if cur == k-1 {
+			v := make([]int, k)
+			copy(v, cache)
+			results = append(results, v)
+			cache[cur]++
+			continue
+		}
+
+		cur++
+		cache[cur] = cache[cur-1] + 1
+	}
+
+	return results
+}
+
+func main() {
+	cnsl := &utils.Console{}
+	cnsl.DoubleDimArray(combine(4, 2))
+	cnsl.DoubleDimArray(combine(4, 1))
+	cnsl.DoubleDimArray(combine(0, 1))
+	cnsl.DoubleDimArray(combine(4, 0))
 }

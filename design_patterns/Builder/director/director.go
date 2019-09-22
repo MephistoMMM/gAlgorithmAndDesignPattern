@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 package director
 
-import "gAaD/design_patterns/Builder/builder"
+import "github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/Builder/builder"
 
 type Director struct {
 	builder builder.Builder

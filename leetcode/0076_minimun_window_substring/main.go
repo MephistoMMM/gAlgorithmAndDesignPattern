@@ -20,7 +20,7 @@
 package main
 
 import (
-	"gAaD/leetcode/utils"
+	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/leetcode/utils"
 )
 
 // https://leetcode.com/problems/minimum-window-substring/

@@ -20,7 +20,7 @@
 package main
 
 import (
-	"gAaD/design_patterns/State/operateBoard"
+	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/State/operateBoard"
 	"math/rand"
 	"time"
 )

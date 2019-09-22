@@ -21,7 +21,7 @@ package main
 
 import (
 	"fmt"
-	"gAaD/design_patterns/Proxy/printer"
+	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/Proxy/printer"
 )
 
 func main() {

@@ -20,8 +20,8 @@
 package main
 
 import (
-	"gAaD/design_patterns/Bridge/funcs"
-	"gAaD/design_patterns/Bridge/impl"
+	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/Bridge/funcs"
+	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/Bridge/impl"
 )
 
 func main() {

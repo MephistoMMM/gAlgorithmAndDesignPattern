@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 package main
 
-import "gAaD/design_patterns/Composite/fs"
+import "github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/Composite/fs"
 
 func main() {
 	rootdir := fs.NewDirectory("root")

@@ -21,8 +21,8 @@ package player
 
 import (
 	"fmt"
-	"gAaD/design_patterns/Strategy/hand"
-	"gAaD/design_patterns/Strategy/strategy"
+	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/Strategy/hand"
+	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/design_patterns/Strategy/strategy"
 )
 
 type Player struct {

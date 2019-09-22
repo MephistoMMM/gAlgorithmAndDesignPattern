@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 package main
 
-import "gAaD/leetcode/utils"
+import "github.com/MephistoMMM/gAlgorithmAndDesignPattern/leetcode/utils"
 
 // https://leetcode.com/problems/add-binary/
 

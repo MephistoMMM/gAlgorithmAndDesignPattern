@@ -22,7 +22,7 @@ package main
 // https://leetcode.com/problems/sqrtx/
 
 import (
-	"gAaD/leetcode/utils"
+	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/leetcode/utils"
 	"math"
 )
 

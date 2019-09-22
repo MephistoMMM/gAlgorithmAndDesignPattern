@@ -21,7 +21,7 @@ package main
 
 // https://leetcode.com/problems/climbing-stairs/submissions/
 
-import "gAaD/leetcode/utils"
+import "github.com/MephistoMMM/gAlgorithmAndDesignPattern/leetcode/utils"
 
 //0 ms	1.9 MB
 func climbStairs(n int) int {

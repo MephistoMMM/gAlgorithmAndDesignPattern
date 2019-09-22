@@ -21,7 +21,7 @@ package main
 
 import (
 	"fmt"
-	"gAaD/leetcode/utils"
+	"github.com/MephistoMMM/gAlgorithmAndDesignPattern/leetcode/utils"
 )
 
 // https://leetcode.com/problems/n-queens/
